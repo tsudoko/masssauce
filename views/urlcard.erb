@@ -1,0 +1,26 @@
+<div class="urlcard">
+  <h3><%= h(@url) %></h3>
+
+   <% @images.each do |img| %>
+     <div class="urlcard-image">
+       <img src="<%= h(img) %>" alt="🤷" />
+       <results>
+       <%
+         s = saucenao(img)
+         s['results'].each do |r|
+           sim = r['header']['similarity']
+           next if sim.to_f < params[:min_similarity].to_f
+           r['data'].each do |k, v|
+             if $base_urls.key? k then
+               sauce_url = $base_urls[k] + v.to_s
+               %> <a href="<%= h(sauce_url) %>"><%= h(sauce_url) %></a> (<%= h(sim) %>%)<br /> <%
+             elsif k.end_with? '_id' and k != 'member_id' then
+               %> <%= h(k) %>: <%= h(v) %> (<%= h(sim) %>%)<br /> <%
+             end
+           end
+         end
+       %>
+       </results>
+     </div>
+   <% end %>
+</div>

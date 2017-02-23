@@ -1,0 +1,41 @@
+<!doctype html>
+<html>
+<head>
+  <meta charset="utf-8" />
+  <link rel="stylesheet" href="/main.css" />
+</head>
+<body>
+  <form action="/" method="POST">
+    Min similarity: <input name="min_similarity" type="number" min="0" max="100" value="90" />%<br />
+    <textarea name="urls"><%= h(params[:urls]) %></textarea><br />
+    <input type="submit" />
+  </form>
+  <%
+    if params[:urls] then
+      notfound = []
+      %> <hr /> <%
+        params[:urls].split("\r\n").each do |url|
+          @url = url
+          begin
+            @images = find_images(url)
+            if @images.empty? then
+              notfound << url
+            else
+              %><%= erb(:urlcard) %><%
+            end
+          rescue Exception => e
+            %> error for <%= h(url) %>: <%= h(e) %><br /> <%
+            notfound << url
+          end
+        end
+
+      if not notfound.empty? then
+          %> <h2>Not found</h2> <%
+        notfound.each do |url|
+          %> <p><a href="<%= h(url) %>"><%= h(url) %></a></p> <%
+        end
+      end
+    end
+  %>
+</body>
+</html>
