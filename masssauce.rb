@@ -24,7 +24,7 @@ post '/' do
       end
 
       images.each do |img|
-        s = saucenao(img)
+        s = SauceNAO.search(img)
         s['results'].each do |r|
           sim = r['header']['similarity']
           next if sim.to_f < params[:min_similarity].to_f
@@ -33,8 +33,8 @@ post '/' do
           ids = {}
 
           r['data'].each do |k, v|
-            if $base_urls.key? k then
-              urls << $base_urls[k] + v.to_s
+            if SauceNAO::BASE_URLS.key? k then
+              urls << SauceNAO::BASE_URLS[k] + v.to_s
             elsif k.end_with? '_id' and k != 'member_id' then
               ids[k] = v.to_s
             end

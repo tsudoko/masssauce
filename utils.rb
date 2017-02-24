@@ -5,25 +5,27 @@ require 'uri'
 
 require 'nokogiri'
 
-$base_urls = {
-  'pixiv_id' => 'http://pixiv.net/i/',
-  'seiga_id' => 'http://seiga.nicovideo.jp/seiga/im',
-  'danbooru_id' => 'https://danbooru.donmai.us/posts/',
-  'gelbooru_id' => 'https://gelbooru.com/index.php?page=post&s=view&id=',
-  'yandere_id' => 'https://yande.re/post/show/',
-}
-
-def saucenao(url)
-  params = {
-    'db' => 999,
-    'output_type' => 2,
-    'url' => url,
+module SauceNAO
+  BASE_URLS = {
+    'pixiv_id' => 'http://pixiv.net/i/',
+    'seiga_id' => 'http://seiga.nicovideo.jp/seiga/im',
+    'danbooru_id' => 'https://danbooru.donmai.us/posts/',
+    'gelbooru_id' => 'https://gelbooru.com/index.php?page=post&s=view&id=',
+    'yandere_id' => 'https://yande.re/post/show/',
   }
 
-  r = Net::HTTP.get(URI.parse('https://saucenao.com/search.php?' + URI.encode_www_form(params)))
-  r = r.sub(/[^{]*/, '')
+  def self.search(url)
+    params = {
+      'db' => 999,
+      'output_type' => 2,
+      'url' => url,
+    }
 
-  return JSON.parse(r)
+    r = Net::HTTP.get(URI.parse('https://saucenao.com/search.php?' + URI.encode_www_form(params)))
+    r = r.sub(/[^{]*/, '')
+
+    return JSON.parse(r)
+  end
 end
 
 def find_images(url)
