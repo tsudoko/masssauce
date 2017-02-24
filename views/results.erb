@@ -1,0 +1,40 @@
+<% @results.each do |url, results| %>
+  <div class="urlcard">
+    <h3><%= h(url) %></h3>
+    <% results.each do |img, matches| %>
+      <div class="urlcard-image">
+        <img src="<%= h(img) %>" alt=" " />
+        <results>
+          <% matches.each do |r| %>
+            <% r[:urls].each do |r_url| %>
+              <a href="<%= h(r_url) %>"><%= h(r_url) %></a> (<%= h(r[:similarity]) %>%)<br/>
+            <% end %>
+            <% r[:ids].each do |k, v| %>
+              <%= h(k) %>: <%= h(v) %> (<%= h(r[:similarity]) %>%)<br/>
+            <% end %>
+          <% end %>
+        </results>
+      </div>
+    <% end %>
+  </div>
+<% end %>
+
+<%= "<h2>Errors</h2>" unless @errors.empty? %>
+<% @errors.each do |url, reason| %>
+  <p><%= h(url) %> (<%= h(reason) %>)</p>
+<% end %>
+
+<%= "<h2>No source found</h2>" unless @nosauce.empty? %>
+<% @nosauce.each do |url, images| %>
+  <div class="urlcard">
+    <h3><%= h(url) %></h3>
+    <% images.each do |img| %>
+      <div class="urlcard-image"><img src="<%= h(img) %>" alt=" " /><results><%= h(img) %></results></div>
+    <% end %>
+  </div>
+<% end %>
+
+<%= "<h2>No images found</h2>" unless @notfound.empty? %>
+<% @notfound.each do |url| %>
+  <p><%= h(url) %></p>
+<% end %>

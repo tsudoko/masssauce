@@ -10,32 +10,9 @@
     <textarea name="urls"><%= h(params[:urls]) %></textarea><br />
     <input type="submit" />
   </form>
-  <%
-    if params[:urls] then
-      notfound = []
-      %> <hr /> <%
-        params[:urls].split("\r\n").each do |url|
-          @url = url
-          begin
-            @images = find_images(url)
-            if @images.empty? then
-              notfound << url
-            else
-              %><%= erb(:urlcard) %><%
-            end
-          rescue Exception => e
-            %> error for <%= h(url) %>: <%= h(e) %><br /> <%
-            notfound << url
-          end
-        end
-
-      if not notfound.empty? then
-          %> <h2>Not found</h2> <%
-        notfound.each do |url|
-          %> <p><a href="<%= h(url) %>"><%= h(url) %></a></p> <%
-        end
-      end
-    end
-  %>
+  <% if params[:urls] then %>
+    <hr />
+    <%= erb :results %>
+  <% end %>
 </body>
 </html>
