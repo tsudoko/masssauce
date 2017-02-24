@@ -6,6 +6,10 @@ require 'uri'
 require 'nokogiri'
 
 module SauceNAO
+  class Error < StandardError
+  end
+
+
   BASE_URLS = {
     'pixiv_id' => 'http://pixiv.net/i/',
     'seiga_id' => 'http://seiga.nicovideo.jp/seiga/im',
@@ -22,9 +26,12 @@ module SauceNAO
     }
 
     r = Net::HTTP.get(URI.parse('https://saucenao.com/search.php?' + URI.encode_www_form(params)))
-    r = r.sub(/[^{]*/, '')
 
-    return JSON.parse(r)
+    begin
+      return JSON.parse(r.sub(/[^{]*/, ''))
+    rescue JSON::ParserError
+      raise Error.new(r)
+    end
   end
 end
 

@@ -21,7 +21,7 @@
 
 <%= "<h2>Errors</h2>" unless @errors.empty? %>
 <% @errors.each do |url, reason| %>
-  <p><%= h(url) %> (<%= h(reason) %>)</p>
+  <p><%= h(url) %> (<%= h(reason.inspect) %>)</p>
 <% end %>
 
 <%= "<h2>No source found</h2>" unless @nosauce.empty? %>
