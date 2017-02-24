@@ -4,5 +4,6 @@
 }
 
 .urlcard-image results {
+	vertical-align: top;
 	display: inline-block;
 }
