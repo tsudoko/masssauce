@@ -15,7 +15,7 @@ post '/' do
 
   return erb(:index) if not params[:urls]
 
-  params[:urls].split("\r\n").each do |url|
+  params[:urls].split("\r\n").select { |x| not x.empty? }.each do |url|
     images = find_images(url)
     if images.empty? then
       @notfound << url
