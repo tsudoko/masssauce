@@ -1,5 +1,4 @@
 require 'json'
-require 'net/http'
 require 'open-uri'
 require 'uri'
 
@@ -9,6 +8,14 @@ module SauceNAO
   class Error < StandardError
   end
 
+  class RateLimit < Error
+    attr_reader :duration
+
+    def initialize(duration)
+      @duration = duration
+      super("Out of searches for #{timedelta_to_s duration}")
+    end
+  end
 
   BASE_URLS = {
     'pixiv_id' => 'http://pixiv.net/i/',
@@ -25,14 +32,42 @@ module SauceNAO
       'url' => url,
     }
 
-    r = Net::HTTP.get(URI.parse('https://saucenao.com/search.php?' + URI.encode_www_form(params)))
-
     begin
-      return JSON.parse(r.sub(/[^{]*/, ''))
+      r = open('https://saucenao.com/search.php?' + URI.encode_www_form(params))
+      json = JSON.parse(r.read.sub(/[^{]*/, ''))
+    rescue OpenURI::HTTPError
+      raise if json.nil?
+
+      if json['header']['long_remaining'] >= 0
+        raise RateLimit 60*60*24
+      elsif json['header']['short_remaining'] >= 0
+        raise RateLimit 30
+      else
+        raise
+      end
     rescue JSON::ParserError
-      raise Error.new(r)
+      raise Error r.read
     end
   end
+end
+
+def timedelta_to_s(s)
+  result = ''
+
+  m = s / 60
+  h = m / 60
+  d = h / 24
+
+  s %= 60
+  m %= 60
+  h %= 24
+
+  result += "#{d}d" unless d.zero?
+  result += "#{h}h" unless h.zero?
+  result += "#{m}m" unless m.zero?
+  result += "#{s}s" unless s.zero?
+
+  return result
 end
 
 def find_images(url)
