@@ -23,7 +23,16 @@ module SauceNAO
       'url' => url,
     }
 
-    r = open('https://saucenao.com/search.php?' + URI.encode_www_form(params))
+    begin
+      r = open('https://saucenao.com/search.php?' + URI.encode_www_form(params))
+    rescue OpenURI::HTTPError => e
+      content = e.io.read
+      if content.empty?
+        raise
+      else
+        raise Error.new(content)
+      end
+    end
 
     begin
       json = JSON.parse(r.read.sub(/[^{]*/, ''))
