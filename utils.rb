@@ -38,9 +38,9 @@ module SauceNAO
     rescue OpenURI::HTTPError
       raise if json.nil?
 
-      if json['header']['long_remaining'] >= 0
+      if json['header']['long_remaining'] <= 0
         raise RateLimit 60*60*24
-      elsif json['header']['short_remaining'] >= 0
+      elsif json['header']['short_remaining'] <= 0
         raise RateLimit 30
       else
         raise
