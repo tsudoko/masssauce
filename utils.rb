@@ -28,7 +28,7 @@ module SauceNAO
     begin
       json = JSON.parse(r.read.sub(/[^{]*/, ''))
     rescue JSON::ParserError
-      raise Error r.read
+      raise Error.new(r.read)
     end
   end
 end
