@@ -25,14 +25,6 @@ post '/' do
     images.each do |img|
       begin
         s = SauceNAO.search(img)
-      rescue SauceNAO::RateLimit => e
-        if e.duration > 30 then
-          @errors[url] = e
-        else
-          STDERR.puts e
-          STDERR.puts "Sleeping for #{utils.timedelta_to_s e.duration}"
-          sleep e.duration
-        end
       rescue StandardError => e
         @errors[url] = e
       end
@@ -62,6 +54,12 @@ post '/' do
       unless @results.key? url and @results[url].key? img then
         @nosauce[url] = [] if not @nosauce.key? url
         @nosauce[url] << img
+      end
+
+      if s['header']['short_remaining'] <= 1
+          STDERR.puts "Out of searches for 30s"
+          STDERR.puts "Sleeping"
+          sleep 30
       end
     end
   end
