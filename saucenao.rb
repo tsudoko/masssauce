@@ -14,12 +14,15 @@ module SauceNAO
     'yandere_id' => 'https://yande.re/post/show/',
   }
 
-  def self.search(url)
+  def self.search(url, db: nil, dbmask: nil, dbmaski: nil)
     params = {
-      'db' => 999,
       'output_type' => 2,
       'url' => url,
     }
+
+    params['db'] = db if not db.nil?
+    params['dbmask'] = dbmask if not dbmask.nil?
+    params['dbmaski'] = dbmaski if not dbmaski.nil?
 
     begin
       r = open('https://saucenao.com/search.php?' + URI.encode_www_form(params))
