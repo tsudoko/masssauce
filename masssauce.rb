@@ -13,14 +13,14 @@ post '/' do
   @results = {}
   @errors = {}
   @nosauce = {}
-  @notfound = []
+  @noimages = []
 
   return erb(:index) if not params[:urls]
 
   params[:urls].split("\r\n").select { |x| not x.empty? }.each do |url|
     images = find_images(url)
     if images.empty? then
-      @notfound << url
+      @noimages << url
       next
     end
 

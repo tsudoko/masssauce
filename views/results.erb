@@ -34,7 +34,7 @@
   </div>
 <% end %>
 
-<%= "<h2>No images found</h2>" unless @notfound.empty? %>
-<% @notfound.each do |url| %>
+<%= "<h2>No images found</h2>" unless @noimages.empty? %>
+<% @noimages.each do |url| %>
   <p><%= h(url) %></p>
 <% end %>
