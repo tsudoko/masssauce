@@ -1,5 +1,7 @@
 #!/usr/bin/env ruby
 require 'sinatra'
+
+require_relative './saucenao'
 require_relative './utils'
 include ERB::Util
 
