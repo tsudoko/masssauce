@@ -14,8 +14,16 @@ post '/' do
   @errors = {}
   @nosauce = {}
   @noimages = []
+  dbmask = nil
 
   return erb(:index) if not params[:urls]
+
+  if not params[:db_whitelist].empty?
+    dbmask = 0
+    params[:db_whitelist].split.each do |id|
+      dbmask |= 1 << id.to_i
+    end
+  end
 
   params[:urls].split("\r\n").select { |x| not x.empty? }.each do |url|
     images = find_images(url)
@@ -26,7 +34,7 @@ post '/' do
 
     images.each do |img|
       begin
-        s = SauceNAO.search(img)
+        s = SauceNAO.search(img, dbmask: dbmask)
       rescue StandardError => e
         @errors[url] = e
       end

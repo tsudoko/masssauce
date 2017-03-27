@@ -7,8 +7,10 @@
 <body>
   <form action="/" method="POST">
     Min similarity: <input name="min_similarity" type="number" min="0" max="100" value="90" />%<br />
+    DB whitelist: <input name="db_whitelist" value="<%= h(params[:db_whitelist]) %>" /><br />
     <textarea name="urls"><%= h(params[:urls]) %></textarea><br />
-    <input type="submit" />
+    <input type="submit" /><br />
+    DB whitelist expects space-separated <a href="https://saucenao.com/status.html">database IDs</a>.
   </form>
   <% if params[:urls] then %>
     <hr />
