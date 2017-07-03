@@ -26,10 +26,15 @@ post '/' do
   end
 
   params[:urls].split("\r\n").select { |x| not x.empty? }.each do |url|
-    images = find_images(url)
-    if images.empty? then
-      @noimages << url
-      next
+    begin
+      images = find_images(url)
+      if images.empty? then
+        @noimages << url
+        next
+      end
+    rescue StandardError => e
+      @errors[url] = e
+      images = []
     end
 
     images.each do |img|
